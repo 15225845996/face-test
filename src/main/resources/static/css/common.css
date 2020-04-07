@@ -1,0 +1,5 @@
+
+.align-center{
+    margin:0 auto; /* 居中 这个是必须的，，其它的属性非必须 */
+    text-align:center; /* 文字等内容居中 */
+}
