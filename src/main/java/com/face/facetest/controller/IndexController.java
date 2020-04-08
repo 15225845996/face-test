@@ -2,6 +2,7 @@ package com.face.facetest.controller;
 
 import com.arcsoft.face.FaceEngine;
 import com.arcsoft.face.FaceInfo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.face.facetest.service.FaceInfoServiceImpl;
 import com.face.facetest.utils.FaceUtils;
 import com.face.facetest.utils.ImageUtils;
@@ -35,12 +36,18 @@ public class IndexController {
             List<FaceInfo> faceInfos = FaceUtils.detectFaces(faceEngine, bytes);
             if(faceInfos != null && faceInfos.size() > 0){
                 byte[] feature = FaceUtils.feature(faceEngine, bytes, faceInfos.get(0));
-                com.face.facetest.entry.FaceInfo faceInfo = new com.face.facetest.entry.FaceInfo();
-                faceInfo.setName(faceVo.getName());
-                faceInfo.setFaceData(feature);
-                boolean save = faceInfoService.save(faceInfo);
+                //查看是否已存在用户
+                QueryWrapper<com.face.facetest.entry.FaceInfo> query = new QueryWrapper<>();
+                query.lambda().eq(i -> i.getName(),faceVo.getName());
+                com.face.facetest.entry.FaceInfo one = faceInfoService.getOne(query);
+                if(one == null){
+                    one = new com.face.facetest.entry.FaceInfo();
+                    one.setName(faceVo.getName());
+                }
+                one.setFaceData(feature);
+                boolean save = faceInfoService.saveOrUpdate(one);
                 if(save){
-                    result.put("msg","添加成功");
+                    result.put("msg","添加/修改成功");
                 }
             }
             faceEngine.unInit();
