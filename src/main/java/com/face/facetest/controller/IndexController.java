@@ -38,7 +38,7 @@ public class IndexController {
                 byte[] feature = FaceUtils.feature(faceEngine, bytes, faceInfos.get(0));
                 //查看是否已存在用户
                 QueryWrapper<com.face.facetest.entry.FaceInfo> query = new QueryWrapper<>();
-                query.lambda().eq(i -> i.getName(),faceVo.getName());
+                query.lambda().eq(com.face.facetest.entry.FaceInfo::getName,faceVo.getName());
                 com.face.facetest.entry.FaceInfo one = faceInfoService.getOne(query);
                 if(one == null){
                     one = new com.face.facetest.entry.FaceInfo();
