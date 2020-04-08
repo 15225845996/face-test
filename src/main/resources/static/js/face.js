@@ -38,7 +38,7 @@ function getUserMediaToPhoto(constraints,success,error) {
 }
 //获取图片
 function getFace() {
-    context.drawImage(video,0,0,300,150);
+    context.drawImage(video,0,0,150,150);
     this.img=canvas.toDataURL('image/jpg')
     //获取完整的base64编码
     this.img=img.split(',')[1];
@@ -47,7 +47,7 @@ function getFace() {
 //打开摄像头
 function openUserMedia() {
     if(navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia){
-        getUserMediaToPhoto({video:{width:300,height:300,facingMode: "user"}},success,error);
+        getUserMediaToPhoto({video:{width:150,height:150,facingMode: "user"}},success,error);
     }else{
         alert('你的浏览器不支持访问用户媒体设备');
     }
