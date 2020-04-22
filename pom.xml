@@ -16,6 +16,8 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+
+		<skipTests>true</skipTests>
 	</properties>
 
 	<dependencies>
@@ -44,6 +46,15 @@
 			<optional>true</optional>
 		</dependency>
 
+		<!--虹软-->
+		<dependency>
+			<groupId>com.arcsoft</groupId>
+			<artifactId>face</artifactId>
+			<version>3.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/lib/arcsoft-sdk-face-3.0.0.0.jar</systemPath>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -64,6 +75,21 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources/lib</directory>
+				<targetPath>BOOT-INF/lib/</targetPath>
+				<includes>
+					<include>**/*.jar</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<targetPath>BOOT-INF/classes/</targetPath>
+			</resource>
+		</resources>
+
 	</build>
 
 </project>

@@ -79,7 +79,7 @@ public class FaceUtils {
         /*
         * 此路径为sdk压缩包中 libs文件夹下的dll文件路径
         * */
-        FaceEngine faceEngine = new FaceEngine("C:\\Users\\zs\\Desktop\\ArcSoft\\arcsoft_lib");
+        FaceEngine faceEngine = new FaceEngine("/usr/local/nhzn/arcsoft_lib");
         //激活引擎
         int errorCode = faceEngine.activeOnline(appId, sdkKey);
 
