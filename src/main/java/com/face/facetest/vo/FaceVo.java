@@ -14,4 +14,7 @@ public class FaceVo implements Serializable {
     private String name;
 
     private String faceStr;
+
+    private Integer x;
+    private Integer y;
 }

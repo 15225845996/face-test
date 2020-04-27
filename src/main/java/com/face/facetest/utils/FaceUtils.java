@@ -33,14 +33,18 @@ public class FaceUtils {
     private String appId1;
     @Value("${face.sdkKey}")
     private String sdkKey1;
+    @Value("${face.lib.path}")
+    private String libPath1;
 
     public static String appId;
     public static String sdkKey;
+    public static String libPath;
 
     @PostConstruct
     public void init(){
         appId = this.appId1;
         sdkKey = this.sdkKey1;
+        libPath = this.libPath1;
     }
 
     //特征比对
@@ -79,7 +83,7 @@ public class FaceUtils {
         /*
         * 此路径为sdk压缩包中 libs文件夹下的dll文件路径
         * */
-        FaceEngine faceEngine = new FaceEngine("/usr/local/nhzn/arcsoft_lib");
+        FaceEngine faceEngine = new FaceEngine(libPath);
         //激活引擎
         int errorCode = faceEngine.activeOnline(appId, sdkKey);
 
