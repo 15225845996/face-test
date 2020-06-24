@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/common.css" media="all">
+</head>
+<body class="align-center">
+
+    <h1 style="margin-top: 50px">添加用户信息</h1>
+    <br>
+    <a href="/searchUser.html">查找用户</a>
+    <br>
+    <br>
+    <div class="faceDiv">
+        <video id="video"></video>
+        <canvas id="canvas" style="display: none;"></canvas>
+    </div>
+    <br/><br/><br/>
+    用户ID：<input id="id" />
+    用户名：<input id="name" />
+    <br/><br/><br/>
+    <button id="saveUser">保存</button>
+</body>
+<script src="/js/jquery-3.4.1.min.js" charset="utf-8"></script>
+<script src="/js/face.js" charset="utf-8"></script>
+<script>
+    openUserMedia();
+
+    $("#saveUser").click(function () {
+        var name = $("#name").val();
+        var id = $("#id").val();
+        if(name){
+            var img = getFace();
+            $.ajax({
+                type:"post",
+                url:"/addUser",
+                data:{
+                    "img":img,
+                    "id":id,
+                    "name":name
+                },
+                success:function (rst) {
+                    alert(rst.msg)
+                },
+                error:function () {
+                    alert("连接服务器失败")
+                }
+            })
+        }else{
+            alert("姓名不能为空")
+        }
+
+
+    })
+</script>
+</html>

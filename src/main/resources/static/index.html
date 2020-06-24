@@ -1,54 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="/css/common.css" media="all">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-<body class="align-center">
+<body>
+<canvas id="outputCanvas"></canvas>
+<div id="sourceDiv" >
+	<canvas id="source" ></canvas>
+</div>
 
-    <h1 style="margin-top: 50px">添加用户信息</h1>
-    <br>
-    <a href="/searchUser.html">查找用户</a>
-    <br>
-    <br>
-    <div class="faceDiv">
-        <video id="video"></video>
-        <canvas id="canvas" style="display: none;"></canvas>
-    </div>
-    <br/><br/><br/>
-    用户名：<input id="name" />
-    <br/><br/><br/>
-    <button id="saveUser">保存</button>
-</body>
-<script src="/js/jquery-3.4.1.min.js" charset="utf-8"></script>
-<script src="/js/face.js" charset="utf-8"></script>
-<script>
-    openUserMedia();
 
-    $("#saveUser").click(function () {
-        var name = $("#name").val();
-        if(name){
-            var img = getFace();
+<div id="imgs">
+
+</div>
+
+
+
+<script src="jquery-3.4.1.min.js"></script>
+<script src="face.js"></script>
+<script async src="opencv/opencv.js"></script>
+<script type="text/javascript" src="jsmpeg.min.js"></script>
+
+
+<script type="text/javascript">
+    var num = 0;
+
+    function syncFace(face,width,height) {
+        var tnCanvas = document.createElement('canvas')
+        var tnCanvasContext = tnCanvas.getContext('2d');
+        var x = face['x']
+        var y = face['y']
+        var w = face['w']
+        var h = face['h']
+        var w1 = w/10
+        var h1 = h/10
+        if(x >= w1){//左边冗余百分之10
+            x = x - w1
+            w += w1;
+        }
+        if(width >= w+w1){
+            w += w1;
+        }
+        if(y >= h1){
+            y = y- h1;
+            h += h1;
+        }
+        if(height >= h+h1){
+            h += h1;
+        }
+        tnCanvas.width = w;
+        tnCanvas.height = h;
+
+		//获取base64
+        tnCanvasContext.drawImage(document.getElementById("source"), x,y,w, h,0,0,w,h);
+        var img=tnCanvas.toDataURL('image/png')
+
+        //获取完整的base64编码
+        var imgs = img.split(',');
+
+        $.ajax({
+			url:"/face/search1",
+			type:"post",
+			data:{
+			    "img":imgs[1],
+			    "imgHeand":imgs[0]
+			},
+			success:function (rst) {
+			    if(rst.code == 1){
+                    var img = document.createElement('img')
+                    $(img).attr("src",rst.imgHeand+","+rst.img)
+                    document.getElementById('imgs').appendChild(img)
+				}
+            }
+		})
+    }
+
+
+
+    function syncFace2(face,imageData) {
+        var width = imageData.width;
+        var height = imageData.height;
+
+        var x = face['x']
+        var y = face['y']
+        var w = face['w']
+        var h = face['h']
+
+        //获取清晰度
+        var canvas = document.getElementById("source")
+        let ctx = canvas.getContext("2d");
+        let imgData1 = ctx.getImageData(x, y, w, h);
+        let sourcesMat = cv.matFromImageData(imgData1);
+        cv.cvtColor(sourcesMat, sourcesMat, cv.COLOR_RGBA2GRAY);
+        let laplacianDstImage = new cv.Mat();
+        cv.Laplacian(sourcesMat, laplacianDstImage, cv.CV_64F);
+        //矩阵标准差
+        let stddev = new cv.Mat();
+        let mean = new cv.Mat();
+
+        cv.meanStdDev(laplacianDstImage, mean, stddev);
+        var num1 = stddev.data64F[0]
+
+        stddev.delete();
+        laplacianDstImage.delete();
+        mean.delete();
+
+        if(num1 >= 20){
+            var tnCanvas = document.createElement('canvas')
+            var tnCanvasContext = tnCanvas.getContext('2d');
+            tnCanvas.width = w;
+            tnCanvas.height = h;
+
+            //获取base64
+            tnCanvasContext.drawImage(document.getElementById("source"), x,y,w, h,0,0,w,h);
+            var imgData = tnCanvas.toDataURL('image/png')
+            //获取完整的base64编码
+            var imgs = imgData.split(',');
+
+            // instance.personAdd('111',img)
+
             $.ajax({
+                url:"http://localhost/face/search",
                 type:"post",
-                url:"/addUser",
                 data:{
-                    "faceStr":img,
-                    "name":name
+                    "img":imgs[1],
+                    "imgHeand":imgs[0],
+                    "x":Math.round(w),
+                    "y":Math.round(h)
                 },
+                dataType: "jsonp",
+                jsonp: "callback",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(一般默认为:callback)
+                jsonpCallback:"showData",//自定义的jsonp回调函数名称，默认为jQuery自动生成的随机函数名，也可以不写这
                 success:function (rst) {
-                    alert(rst.msg)
-                },
-                error:function () {
-                    alert("连接服务器失败")
+                    var src = null;
+                    /*var src1 = getAudioSrc('热烈欢迎钦家朱总',3,5,5,5);*/
+                    console.dir(rst.name + ']'+rst.code+ rst)
+                    if(src != null){
+                        $("#audio").attr("src",src);
+                    }
                 }
             })
         }else{
-            alert("姓名不能为空")
+            console.log("图片太糊了")
         }
+    }
+
+    function showData() {
+
+    }
 
 
-    })
+    var canvas = document.getElementById('source');
+    var url = 'ws://localhost/rtsp';
+    var player = new JSMpeg.Player(url, {
+        canvas: canvas,
+        onVideoDecode:function(data,aa){//每一帧渲染完成
+        }
+    });
+
 </script>
+</body>
 </html>

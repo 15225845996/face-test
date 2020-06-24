@@ -60,7 +60,6 @@ public class FaceUtils {
         //特征提取
         FaceFeature faceFeature = new FaceFeature();
         int errorCode = faceEngine.extractFaceFeature(imageInfo.getImageData(), imageInfo.getWidth(), imageInfo.getHeight(), imageInfo.getImageFormat(), faceInfo, faceFeature);
-        System.out.println("特征值大小：" + faceFeature.getFeatureData().length);
         return faceFeature.getFeatureData();
     }
 
@@ -70,6 +69,7 @@ public class FaceUtils {
         ImageInfo imageInfo = getRGBData(bytes);
         List<FaceInfo> faceInfoList = new ArrayList<FaceInfo>();
         int errorCode = faceEngine.detectFaces(imageInfo.getImageData(), imageInfo.getWidth(), imageInfo.getHeight(), imageInfo.getImageFormat(), faceInfoList);
+        System.out.println("获取人脸位置:"+errorCode);
         return faceInfoList;
     }
 
@@ -81,7 +81,7 @@ public class FaceUtils {
         * */
         FaceEngine faceEngine = new FaceEngine("C:\\Users\\zs\\Desktop\\ArcSoft\\arcsoft_lib");
         //激活引擎
-        int errorCode = faceEngine.activeOnline(appId, sdkKey);
+        /*int errorCode = faceEngine.activeOnline(appId, sdkKey);
 
         if (errorCode != ErrorInfo.MOK.getValue() && errorCode != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED.getValue()) {
             System.out.println("引擎激活失败");
@@ -91,7 +91,7 @@ public class FaceUtils {
         errorCode = faceEngine.getActiveFileInfo(activeFileInfo);
         if (errorCode != ErrorInfo.MOK.getValue() && errorCode != ErrorInfo.MERR_ASF_ALREADY_ACTIVATED.getValue()) {
             System.out.println("获取激活文件信息失败");
-        }
+        }*/
 
         //引擎配置
         EngineConfiguration engineConfiguration = new EngineConfiguration();
@@ -112,7 +112,7 @@ public class FaceUtils {
 
 
         //初始化引擎
-        errorCode = faceEngine.init(engineConfiguration);
+        int errorCode = errorCode = faceEngine.init(engineConfiguration);
 
         if (errorCode != ErrorInfo.MOK.getValue()) {
             System.out.println("初始化引擎失败");

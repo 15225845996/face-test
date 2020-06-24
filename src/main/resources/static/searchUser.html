@@ -9,7 +9,7 @@
 
     <h1 style="margin-top: 50px">查找用户信息</h1>
     <br>
-    <a href="/index.html">添加用户</a>
+    <a href="/add.html">添加用户</a>
     <br>
     <br>
     <div class="faceDiv">
@@ -32,7 +32,7 @@
             type:"post",
             url:"/searchUser",
             data:{
-                "faceStr":img
+                "img":img
             },
             success:function (rst) {
                 $("#userInfo").html(rst.msg)
