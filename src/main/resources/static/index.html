@@ -5,7 +5,7 @@
 </head>
 <body>
 <canvas id="outputCanvas"></canvas>
-<div id="sourceDiv" >
+<div id="sourceDiv" style="position: absolute" >
 	<canvas id="source" ></canvas>
 </div>
 
@@ -85,6 +85,22 @@
         var y = face['y']
         var w = face['w']
         var h = face['h']
+        var w1 = w/10
+        var h1 = h/10
+        if(x >= w1){//左边冗余百分之10
+            x = x - w1
+            w += w1;
+        }
+        if(width >= w+w1){
+            w += w1;
+        }
+        if(y >= h1){
+            y = y- h1;
+            h += h1;
+        }
+        if(height >= h+h1){
+            h += h1;
+        }
 
         //获取清晰度
         var canvas = document.getElementById("source")
@@ -105,20 +121,17 @@
         laplacianDstImage.delete();
         mean.delete();
 
+
+        var tnCanvas = document.createElement('canvas')
+        var tnCanvasContext = tnCanvas.getContext('2d');
+        tnCanvasContext.drawImage(document.getElementById("source"), x,y,w, h,0,0,w,h);
+        var imgData = tnCanvas.toDataURL('image/png')
+        tnCanvas.width = w;
+        tnCanvas.height = h;
+        //获取完整的base64编码
+        var imgs = imgData.split(',');
+
         if(num1 >= 20){
-            var tnCanvas = document.createElement('canvas')
-            var tnCanvasContext = tnCanvas.getContext('2d');
-            tnCanvas.width = w;
-            tnCanvas.height = h;
-
-            //获取base64
-            tnCanvasContext.drawImage(document.getElementById("source"), x,y,w, h,0,0,w,h);
-            var imgData = tnCanvas.toDataURL('image/png')
-            //获取完整的base64编码
-            var imgs = imgData.split(',');
-
-            // instance.personAdd('111',img)
-
             $.ajax({
                 url:"http://localhost/face/search",
                 type:"post",
@@ -142,7 +155,9 @@
             })
         }else{
             console.log("图片太糊了")
+            $(tnCanvas).attr("msg","图片太糊了")
         }
+        document.getElementById('imgs').appendChild(tnCanvas)
     }
 
     function showData() {

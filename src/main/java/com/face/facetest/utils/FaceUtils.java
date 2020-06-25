@@ -60,7 +60,11 @@ public class FaceUtils {
         //特征提取
         FaceFeature faceFeature = new FaceFeature();
         int errorCode = faceEngine.extractFaceFeature(imageInfo.getImageData(), imageInfo.getWidth(), imageInfo.getHeight(), imageInfo.getImageFormat(), faceInfo, faceFeature);
-        return faceFeature.getFeatureData();
+        if(errorCode == 0){
+            return faceFeature.getFeatureData();
+        }else{
+            return null;
+        }
     }
 
     //获取人脸位置
@@ -95,7 +99,7 @@ public class FaceUtils {
 
         //引擎配置
         EngineConfiguration engineConfiguration = new EngineConfiguration();
-        engineConfiguration.setDetectMode(DetectMode.ASF_DETECT_MODE_IMAGE);
+        engineConfiguration.setDetectMode(DetectMode.ASF_DETECT_MODE_VIDEO);
         engineConfiguration.setDetectFaceOrientPriority(DetectOrient.ASF_OP_ALL_OUT);
         engineConfiguration.setDetectFaceMaxNum(10);
         engineConfiguration.setDetectFaceScaleVal(16);

@@ -80,7 +80,10 @@ public class FaceController {
             if(faceInfo != null){
                 byte[] feature = FaceUtils.feature(faceEngine, bytes, faceInfo);
                 if(feature != null){
-                    List<IsusFaceInfo> list = faceInfoService.list();
+                    QueryWrapper<IsusFaceInfo> query = new QueryWrapper<>();
+                    query.orderByAsc("is_strange");
+                    query.select("id","name","is_strange","face_data","face_data1","face_data2");
+                    List<IsusFaceInfo> list = faceInfoService.list(query);
                     if(list != null){
                         for (IsusFaceInfo faceData : list) {
                             if(faceData.getFaceData() != null){
@@ -96,21 +99,21 @@ public class FaceController {
                             }
                         }
                     }
-                }
-                if(result.getCode() == -1){//库里没有改人脸信息
-                    IsusFaceInfo isusFaceInfo = new IsusFaceInfo();
-                    isusFaceInfo.setId(System.currentTimeMillis()+""+(int)(1+Math.random()*(100-1+1)));
-                    isusFaceInfo.setName("陌生人");
-                    isusFaceInfo.setIsStrange(true);
-                    isusFaceInfo.setFaceData(feature);
-                    isusFaceInfo.setImgInfo(faceVo.getImgHeand()+","+faceVo.getImg());
-                    boolean save = faceInfoService.saveOrUpdate(isusFaceInfo);
-                    if(save){
-                        result.setCode(1);
-                        result.setId(isusFaceInfo.getId());
-                        result.setName(isusFaceInfo.getName());
-                        result.setScore(1);
-                        result.setIsStrange(isusFaceInfo.getIsStrange());
+                    if(result.getCode() == -1){//库里没有改人脸信息
+                        IsusFaceInfo isusFaceInfo = new IsusFaceInfo();
+                        isusFaceInfo.setId(System.currentTimeMillis()+""+(int)(1+Math.random()*(100-1+1)));
+                        isusFaceInfo.setName("陌生人");
+                        isusFaceInfo.setIsStrange(true);
+                        isusFaceInfo.setFaceData(feature);
+                        isusFaceInfo.setImgInfo(faceVo.getImgHeand()+","+faceVo.getImg());
+                        boolean save = faceInfoService.saveOrUpdate(isusFaceInfo);
+                        if(save){
+                            result.setCode(1);
+                            result.setId(isusFaceInfo.getId());
+                            result.setName(isusFaceInfo.getName());
+                            result.setScore(1);
+                            result.setIsStrange(isusFaceInfo.getIsStrange());
+                        }
                     }
                 }
                 if(result.getCode() == 1){
