@@ -26,7 +26,8 @@ public class ConvertVideoPakcet implements ApplicationRunner {
             String command = ffmpegPath; // ffmpeg位置
             command += "ffmpeg -rtsp_transport tcp"; // ffmpeg开头，-re代表按照帧率发送，在推流时必须有
             command += " -i \"" + id + "\""; // 指定要推送的视频
-            command += " -q 0 -f mpegts -codec:v mpeg1video -s 700x400 " + fileName; // 指定推送服务器，-f：指定格式   1280  720
+            //command += " -q 0 -f mpegts -codec:v mpeg1video -s 700x400 " + fileName; // 指定推送服务器，-f：指定格式   1280  720
+            command += " -max_muxing_queue_size 2048 -q 0  -c copy -f mpegts -codec:v mpeg1video -s 700x400 " + fileName; // 指定推送服务器，-f：指定格式   1280  720   -c copy   直接copy 可兼容h264
             System.out.println("ffmpeg推流命令：" + command);
 
             // 运行cmd命令，获取其进程
