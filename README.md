@@ -1,5 +1,5 @@
 # RTSP摄像头 web端播放并使用opencv.js实时人脸检测 #
-![效果展示](https://img-blog.csdnimg.cn/20200625093430189.gif)
+
 # 人脸识别Demo 添加人脸，查找人脸 #
 - 添加人脸
 
