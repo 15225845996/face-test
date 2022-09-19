@@ -3,11 +3,11 @@
 # 人脸识别Demo 添加人脸，查找人脸 #
 - 添加人脸
 
-// ![添加](https://img-blog.csdnimg.cn/20200407181351989.png)
+<!--![添加](https://img-blog.csdnimg.cn/20200407181351989.png) -->
 
 - 查找人脸
 
-![查找](https://img-blog.csdnimg.cn/20200407181544728.png)
+<!--![查找](https://img-blog.csdnimg.cn/20200407181544728.png)-->
 
 
 | 名称 | 版本 | 描述 |
